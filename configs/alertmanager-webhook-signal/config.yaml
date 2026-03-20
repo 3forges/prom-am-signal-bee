@@ -5,7 +5,7 @@ server:
 signal:
   number: "+SENDER_NUMBER"    # replace with your registered Signal number
   recipients:
-    - "+RECIPIENT_NUMBER"     # replace with the number to receive alerts
+    - "group.XXXXXXXXXXX=="   # replace with your Signal group ID
   send: "http://signal-cli-rest-api:8080/v2/send"
 
 alertmanager:
