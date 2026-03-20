@@ -1,0 +1,14 @@
+server:
+  port: 10000
+  debug: false
+
+signal:
+  number: "+SENDER_NUMBER"    # replace with your registered Signal number
+  recipients:
+    - "+RECIPIENT_NUMBER"     # replace with the number to receive alerts
+  send: "http://signal-cli-rest-api:8080/v2/send"
+
+alertmanager:
+  generatorURL: false
+  ignoreLabels:
+    - "__replica__"

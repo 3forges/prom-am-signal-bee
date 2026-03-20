@@ -1,0 +1,11 @@
+route:
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: signal-receiver
+
+receivers:
+  - name: signal-receiver
+    webhook_configs:
+      - url: http://alertmanager-webhook-signal:10000/alertmanager
+        send_resolved: true

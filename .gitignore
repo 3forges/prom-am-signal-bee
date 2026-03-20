@@ -1,3 +1,7 @@
 # the folder in whihc i retrieve third pary code to integrate
 recup
 recup/*
+
+# Signal account keys and session data — contains private keys, never commit
+configs/signal-cli-config/*
+!configs/signal-cli-config/.keep

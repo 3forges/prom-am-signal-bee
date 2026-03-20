@@ -126,7 +126,7 @@ services:
       - '--storage.path=/alertmanager'
       - '--web.external-url=http://localhost:9093'
     volumes:
-      - ./configs/alertmanager/alertmanager-fallback-config.yml:/etc/alertmanager/config.yml
+      - ./configs/alertmanager/alertmanager-signal-config.yml:/etc/alertmanager/config.yml
     ports:
       - 9093:9093
     cpus: 0.5
@@ -210,12 +210,11 @@ services:
   alertmanager-webhook-signal:
     image: docker.io/schlauerlauer/alertmanager-webhook-signal:1.1.1
     container_name: alertmanager_webhook_signal
-    # user: root
+    restart: unless-stopped
     environment:
       - CONFIG_PATH=/config.yaml
     ports:
       - 0.0.0.0:10000:10000
-    command: -config.file=/etc/loki/loki.yaml
     volumes:
       - $PWD/configs/alertmanager-webhook-signal/config.yaml:/config.yaml
     cpus: 0.5
@@ -224,18 +223,26 @@ services:
       - monitoring
     labels:
       <<: *default-labels
+    logging: *default-logging
 
 ##########################################
   signal-cli-rest-api:
     image: bbernhard/signal-cli-rest-api:latest
+    container_name: signal-cli-rest-api
+    restart: unless-stopped
     environment:
-      - MODE=normal #supported modes: json-rpc, native, normal
+      - MODE=json-rpc #supported modes: json-rpc, native, normal
       #- AUTO_RECEIVE_SCHEDULE=0 22 * * * #enable this parameter on demand (see description below)
     ports:
       - "0.0.0.0:8080:8080" #map docker port 8080 to host port 8080.
     volumes:
       - $PWD/configs/signal-cli-config:/home/.local/share/signal-cli
       #map "signal-cli-config" folder on host system into docker container. the folder contains the password and cryptographic keys when a new number is registered
+    networks:
+      - monitoring
+    labels:
+      <<: *default-labels
+    logging: *default-logging
 
 ##########################################
 
