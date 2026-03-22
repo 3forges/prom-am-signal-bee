@@ -17,7 +17,9 @@
 docker-compose up -d signal-cli-rest-api
 ```
 
-* When the the `signal-cli-rest-api` service has started, go in your bowser at `http://<IP address of your VM>:8080/v1/qrcodelink?device_name=alertmanager-bot`, and scan the QR code uisng that appears at that page, using the Signal App on you phone (this step realizes authentication and stores signal auth secrets inside the git-ignored `configs/signal-cli-rest-api` folder)
+* When the the `signal-cli-rest-api` service has started, go in your bowser at `http://<IP address of your VM>:8080/v1/qrcodelink?device_name=alertmanager-bot`, and scan the QR code uisng that appears at that page, using the Signal App on you phone (this step realizes authentication and stores signal auth secrets inside the git-ignored `configs/signal-cli-rest-api` folder):
+
+![qr code](./docs/images/signal-cli-rest-api-auth-config.PNG)
 
 * Now your `signal-cli-rest-api` can talk to signal authenticated as the authenticated signal user you used to scan the QR code with (with the signal mobile phone app). Note that an identity in the signal API is called an "Account", and that every account has a phone number associated to it. So using that identity, you will find the ID of the Signal Group you want alertmanager to send notifications to, and generate the `./configs/alertmanager-webhook-signal/config.yaml` configuration file like this:
 
