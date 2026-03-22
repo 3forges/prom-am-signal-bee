@@ -17,7 +17,7 @@
 docker-compose up -d signal-cli-rest-api
 ```
 
-* When the the `signal-cli-rest-api` service has started, go in your bowser at `http://<IP address of your VM>:8080/v1/qrcodelink?device_name=alertmanager-bot`, and scan the QR code uisng that appears at that page, using the Signal App on you phone (this step realizes authentication and stores signal auth secrets inside the git-ignored `configs/signal-cli-rest-api` folder):
+* When the the `signal-cli-rest-api` service has started, go in your browser at `http://<IP address of your VM>:8080/v1/qrcodelink?device_name=alertmanager-bot`, and scan the QR code uisng that appears at that page, using the Signal App on you phone (this step realizes authentication and stores signal auth secrets inside the git-ignored `configs/signal-cli-rest-api` folder):
 
 ![qr code](./docs/images/signal-cli-rest-api-auth-config.PNG)
 
