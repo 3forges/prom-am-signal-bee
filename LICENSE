@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 Ruan Bekker
+Copyright (c) 2026 Jean-Baptiste LASSELLE
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,3 +20,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+SPECIAL GRANTS
+
+This work was built based on:
+
+* to https://github.com/ruanbekker for https://github.com/ruanbekker/docker-monitoring-stack-gpnc (we use version `6b96c143fbe2a1c06ac8fd750c15e7d7d1ef1dbb`)
+
+* to https://github.com/schlauerlauer for https://github.com/schlauerlauer/alertmanager-webhook-signal (we use version `9730f6b6a6ab19982cf16b931927b714f2a663a2`)
+* to https://github.com/bbernhard for https://github.com/bbernhard/signal-cli-rest-api (we use version `0.98`)
+
+And made possible with:
+
+* https://github.com/orgs/3forges/people/elchusco who did a big part of the work discovering the alertmanager / signal integration configuration details.
