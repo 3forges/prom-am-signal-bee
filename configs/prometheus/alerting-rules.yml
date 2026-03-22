@@ -7,6 +7,7 @@ groups:
       description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
     labels:
       severity: warning
+      pdl: memory
     expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
     for: 2m
 
@@ -16,6 +17,7 @@ groups:
       description: "The node is under heavy memory pressure. High rate of major page faults\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
     labels:
       severity: warning
+      pdl: memory
     expr: (rate(node_vmstat_pgmajfault[1m]) > 1000) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
     for: 2m
 
@@ -34,6 +36,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: filesystem
   - alert: NodeFilesystemSpaceFillingUp
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left and is filling up fast."
@@ -49,6 +52,7 @@ groups:
     for: 1h
     labels:
       severity: critical
+      pdl: filesystem
   - alert: NodeFilesystemAlmostOutOfSpace
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left."
@@ -62,6 +66,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: filesystem
   - alert: NodeFilesystemAlmostOutOfSpace
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left."
@@ -75,6 +80,7 @@ groups:
     for: 1h
     labels:
       severity: critical
+      pdl: filesystem
   - alert: NodeFilesystemFilesFillingUp
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left and is filling up."
@@ -90,6 +96,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: filesystem
   - alert: NodeFilesystemFilesFillingUp
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left and is filling up fast."
@@ -105,6 +112,7 @@ groups:
     for: 1h
     labels:
       severity: critical
+      pdl: filesystem
   - alert: NodeFilesystemAlmostOutOfFiles
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left."
@@ -118,6 +126,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: filesystem
   - alert: NodeFilesystemAlmostOutOfFiles
     annotations:
       description: "Filesystem on {{ $labels.device }} at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available inodes left."
@@ -131,6 +140,7 @@ groups:
     for: 1h
     labels:
       severity: critical
+      pdl: filesystem
   - alert: NodeNetworkReceiveErrs
     annotations:
       description: "{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} receive errors in the last two minutes."
@@ -140,6 +150,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: networking
   - alert: NodeNetworkTransmitErrs
     annotations:
       description: "{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf \"%.0f\" $value }} transmit errors in the last two minutes."
@@ -149,6 +160,7 @@ groups:
     for: 1h
     labels:
       severity: warning
+      pdl: networking
   - alert: "NodeHighNumberConntrackEntriesUsed"
     annotations:
       description: "{{ $value | humanizePercentage }} of conntrack entries are used."
@@ -157,6 +169,7 @@ groups:
       (node_nf_conntrack_entries / node_nf_conntrack_entries_limit) > 0.75
     labels:
       severity: warning
+      pdl: networking
   - alert: NodeTextFileCollectorScrapeError
     annotations:
       description: "Node Exporter text file collector failed to scrape."
@@ -165,6 +178,7 @@ groups:
       node_textfile_scrape_error{job="node"} == 1
     labels:
       severity: warning
+      pdl: monitoring
   - alert: NodeClockSkewDetected
     annotations:
       description: "Clock on {{ $labels.instance }} is out of sync by more than 300s. Ensure NTP is configured correctly on this host."
@@ -184,6 +198,7 @@ groups:
     for: 10m
     labels:
       severity: warning
+      pdl: clock
   - alert: NodeClockNotSynchronising
     annotations:
       description: "Clock on {{ $labels.instance }} is not synchronising. Ensure NTP is configured on this host."
@@ -195,6 +210,7 @@ groups:
     for: 10m
     labels:
       severity: warning
+      pdl: clock
   - alert: NodeRAIDDegraded
     annotations:
       description: "RAID array '{{ $labels.device }}' on {{ $labels.instance }} is in degraded state due to one or more disks failures. Number of spare drives is insufficient to fix issue automatically."
@@ -204,6 +220,7 @@ groups:
     for: 15m
     labels:
       severity: critical
+      pdl: storage
   - alert: NodeRAIDDiskFailure
     annotations:
       description: "At least one device in RAID array on {{ $labels.instance }} failed. Array '{{ $labels.device }}' needs attention and possibly a disk swap."
@@ -211,6 +228,7 @@ groups:
     expr: node_md_disks{state="failed"} > 0
     labels:
       severity: warning
+      pdl: storage
 
 - name: cadvisor
   rules:
@@ -222,6 +240,8 @@ groups:
     for: 5m
     labels:
       severity: warning
+      pdl: memory
+      scope: containers
 
   - alert: ContainerMemoryAlmostOut
     annotations:
@@ -231,6 +251,8 @@ groups:
     for: 2m
     labels:
       severity: critical
+      pdl: memory
+      scope: containers
 
   - alert: ContainerCPUThrottlingHigh
     annotations:
@@ -240,6 +262,8 @@ groups:
     for: 5m
     labels:
       severity: warning
+      pdl: cpu
+      scope: containers
 
   - alert: ContainerCPUUsageHigh
     annotations:
@@ -249,6 +273,8 @@ groups:
     for: 5m
     labels:
       severity: warning
+      pdl: cpu
+      scope: containers
 
   - alert: ContainerDiskUsageHigh
     annotations:
@@ -258,6 +284,8 @@ groups:
     for: 5m
     labels:
       severity: warning
+      pdl: storage
+      scope: containers
 
   - alert: ContainerDiskAlmostOut
     annotations:
@@ -267,6 +295,8 @@ groups:
     for: 5m
     labels:
       severity: critical
+      pdl: storage
+      scope: containers
 
   - alert: ContainerRestarts
     annotations:
@@ -276,4 +306,5 @@ groups:
     for: 5m
     labels:
       severity: critical
+      scope: containers
 
