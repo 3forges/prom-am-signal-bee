@@ -27,8 +27,6 @@ docker-compose up -d signal-cli-rest-api
 export PHONE_NUMBER_OF_THE_ACCOUNT='+33XXXXXXXXX'
 export NETWORK_IP_OR_NAME_OF_VM='<ip address or netname>'
 
-export PHONE_NUMBER_OF_THE_ACCOUNT='+33688367187'
-export NETWORK_IP_OR_NAME_OF_VM='openbao.pesto.io'
 export NETWORK_IP_OR_NAME_OF_VM='127.0.0.1'
 # ---
 # name of the 
@@ -81,13 +79,13 @@ OPS_USER_UID_GID="$(id -u):$(id -g)" docker-compose up -d
 
 ## Testing the Alertmanager / signal integration
 
-In below examples `openbao.pesto.io` is the machine network name where everything runs.
+In below examples `${NETWORK_IP_OR_NAME_OF_VM}` is the machine network name where everything runs.
 
 * We create an alert in alertmanager (imulating that prometheus did so):
 
 ```bash
-
-curl -X POST http://openbao.pesto.io:9093/api/v2/alerts \
+export NETWORK_IP_OR_NAME_OF_VM='<ip address or netname>'
+curl -X POST http://${NETWORK_IP_OR_NAME_OF_VM}:9093/api/v2/alerts \
   -H "Content-Type: application/json" \
   -d '[{
     "status": "firing",
@@ -114,16 +112,17 @@ docker exec -it alertmanager sh -c 'wget http://alertmanager_webhook_signal:1000
 # wget: server returned error: HTTP/1.1 405 Method Not Allowed
 ```
 
-* Then check the new alert is there at http://openbao.pesto.io:9093/#/alerts
+* Then check the new alert is there at http://${NETWORK_IP_OR_NAME_OF_VM}:9093/#/alerts
 
 * We send a request to check that the webhook server can receive requests (at least we check that if the webhook server receives a request, we will see it in the logs):
 
 ```bash
+export NETWORK_IP_OR_NAME_OF_VM='<ip address or netname>'
 
-curl -X INFO http://openbao.pesto.io:10000/alertmanager
+curl -X INFO http://${NETWORK_IP_OR_NAME_OF_VM}:10000/alertmanager
 
 
-curl -X POST http://openbao.pesto.io:10000/alertmanager \
+curl -X POST http://${NETWORK_IP_OR_NAME_OF_VM}:10000/alertmanager \
   -H "Content-Type: application/json" \
   -d '{
     "alerts": [
@@ -148,17 +147,16 @@ curl -X POST http://openbao.pesto.io:10000/alertmanager \
   * in the rest api logs if we see that `docker-compose logs -f signal-cli-rest-api`
   * acording https://github.com/schlauerlauer/alertmanager-webhook-signal/blob/9730f6b6a6ab19982cf16b931927b714f2a663a2/internal/alerts/alert_handler.go#L54 we shuld see something int he ogs if the request to the signal api failed , but yet nothing
 
-
 * we check that the signal rest api works, by sending a request to that api we send a message to signal successfully:
 
 ```bash
-curl -ivvv -d '{ "number": "+336XXXXXXXX", "recipients": [ "group.ZnhyMTBVeGY0ZWlrMmRkWXlGSEFrTzgyVmVQNTJjNXJTdUVMdlpaRVM0dz0=" ], "message": "test api avec curl pour PDL" }' -X POST http://openbao.pesto.io:8080/v2/send
+export NETWORK_IP_OR_NAME_OF_VM='<ip address or netname>'
+
+curl -ivvv -d '{ "number": "+336XXXXXXXX", "recipients": [ "group.DeAdBeEfDeAdBeEfDeAdBeEfDeAdBeEfDeAdBeEfDeAdBeEfDeAdBeEf=" ], "message": "test api avec curl pour PDL" }' -X POST http://${NETWORK_IP_OR_NAME_OF_VM}:8080/v2/send
 # and to see logs :  docker-compose logs -f signal-cli-rest-api
-```
 
-
-
-curl -X POST http://openbao.pesto.io:9093/api/v2/alerts \                                  
+export NETWORK_IP_OR_NAME_OF_VM='<ip address or netname>'
+curl -X POST http://${NETWORK_IP_OR_NAME_OF_VM}:9093/api/v2/alerts \                                  
 -H "Content-Type: application/json" \
 -d '[{
     
@@ -170,6 +168,8 @@ curl -X POST http://openbao.pesto.io:9093/api/v2/alerts \
     "summary": "This is a test alert - nan la c jb"
 }
 }]'
+
+```
 
 ## References
 
